@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import axios from 'axios';
 
 interface IMyComponentProps {
 }
 
 interface IMyComponentState {
   isLoading: boolean,
-  dataSource?: string
+  dataSource?: string[],
 }
 
 export default class App extends React.Component<IMyComponentProps, IMyComponentState> {
@@ -17,9 +18,10 @@ export default class App extends React.Component<IMyComponentProps, IMyComponent
   }
 
   componentDidMount(){
-    return fetch('http://localhost:3000')
-      .then((response) => response.text())
+    return axios.get('http://localhost:3000')
+      .then((response) => response.data)
       .then((responseString) => {
+        console.log(this);
         this.setState({
           isLoading: false,
           dataSource: responseString
@@ -31,6 +33,7 @@ export default class App extends React.Component<IMyComponentProps, IMyComponent
   }
 
   render(){
+
     if(this.state.isLoading){
       return(
         <View style={{flex: 1, padding: 20}}>
@@ -41,7 +44,7 @@ export default class App extends React.Component<IMyComponentProps, IMyComponent
 
     return (
       <View style={styles.container}>
-        <Text>{this.state.dataSource}</Text>
+        {this.state.dataSource.map(d => <Text>{d["title"]}</Text>)}
       </View>
     );
   }
